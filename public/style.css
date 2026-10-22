@@ -35,3 +35,79 @@ select {
     gap: 24px;
     margin-bottom: 25px;
 }
+
+.catalogue {
+    margin-top: 32px;
+}
+
+.catalogue-heading-row,
+.movie-card,
+.movie-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.movie-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.movie-card {
+    padding: 18px 20px;
+    border: 1px solid #e1d8ca;
+    border-radius: 14px;
+    background: #fffdf9;
+}
+
+.movie-title,
+.movie-meta,
+.movie-rating {
+    margin: 0;
+}
+
+.movie-title {
+    font-size: 1.1rem;
+}
+
+.movie-meta,
+.movie-rating,
+.empty-state {
+    margin-top: 6px;
+    color: #6e665b;
+}
+
+.movie-actions select,
+.movie-actions button {
+    min-height: 38px;
+    padding: 7px 10px;
+    border: 1px solid #cfc4b4;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.movie-actions button {
+    cursor: pointer;
+}
+
+.delete-button {
+    color: #9a342e;
+}
+
+.form-message.is-error {
+    color: #9a342e;
+}
+
+@media (max-width: 640px) {
+    .catalogue-heading-row,
+    .movie-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .movie-actions {
+        flex-wrap: wrap;
+    }
+}
