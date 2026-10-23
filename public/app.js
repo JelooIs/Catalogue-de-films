@@ -47,6 +47,7 @@ function afficherFilms(genre) {
         </div>
     </div>`;
       });
+      document.querySelector(".summary-badge").textContent = `${data.length} films`;
     });
 }
 
