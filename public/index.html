@@ -1,22 +1,63 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catalogue Film</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h1>Catalogue de films</h1>
-    <select name="genre" id="select-genre">
-      <option value="">choisissez un genre</option>
-      <!-- ajout des option dynamiquement avec l'API (jss trop boosté)-->
-    </select>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f0e8"/>
+    <title>Catalogue de films</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="js/main.js"></script>
+</head>
+<body>
+    <main class="page-shell">
+        <header class="page-header">
+            <div>
+                <p class="eybrow">LE CINEMA AUPRES DE VOUS</p>
+                <h1>Catalogue de films</h1>
+            </div>
+            <p class="summary-badge" aria-live="polite">0 films</p>
+        </header>
 
-    <div id="liste-films">
-      <!--les films appareitron la avec des divs (normalement)-->
-    </div>
-    
-  </body>
-  <script src="app.js"></script>
+        <section class="add-panel" aria-labelledby="add-heading">
+            <h2 id="add-heading">Ajouter un film</h2>
+            <form id="movie-form">
+                <label class="field title-field">
+                    <span>Titre</span>
+                    <input id="title" name="title" type="text" maxlength="100" placeholder="Ex. Inception" required>
+                </label>
+                <label class="field genre-field">
+                    <span>Genre</span>
+                    <select id="genre" name="genre" required>
+                        <option value="">Choisir un genre</option>
+                    </select>
+                </label>
+                <label class="field year-field" for="year">
+                    <span>Année</span>
+                    <input type="number" id="year" name="year" min="1888" required>
+                </label>
+                <button class="add-button" type="submit">
+                    <span aria-hidden="true">+</span>
+                    Ajouter
+                </button>
+            </form>
+            <p id="form-message" class="form-message" role="status"></p>
+        </section>
+
+        <section class="catalogue" aria-labelledby="catalogue-heading">
+            <div class="catalogue-heading-row">
+                <div class="catalogue-title-group">
+                    <h2 id="catalogue-heading">Catalogue</h2>
+                    <p id="catalogue-count" class="catalogue-count"></p>
+                </div>
+                <label class="field filter-field">
+                    <span>Filtrer par genre</span>
+                    <select id="genre-filter" aria-label="Filtrer par genre">
+                        <option value="">Tous les genres</option>
+                    </select>
+                </label>
+            </div>
+            <div id="movie-list" class="movie-list" aria-live="polite"></div>
+        </section>
+    </main>
+</body>
 </html>
