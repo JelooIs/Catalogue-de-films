@@ -9,13 +9,13 @@ function renderStars(rating) {
 fetch("http://localhost:3000/api/genres")
   .then((res) => res.json())
   .then((genres) => {
-    const select = document.querySelector("#select-genre");
+    const select = document.querySelector("#genre-filter");
     genres.forEach((genre) => {
       select.innerHTML += `<option value="${genre}">${genre}</option>`;
     });
   });
 
-const select = document.querySelector("#select-genre");
+const select = document.querySelector("#genre-filter");
 
 function afficherFilms(genre) {
   const url = genre
@@ -25,7 +25,7 @@ function afficherFilms(genre) {
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
-      const divListeFilm = document.querySelector("#liste-films");
+      const divListeFilm = document.querySelector("#movie-list");
       divListeFilm.innerHTML = "";
       data.forEach((film) => {
         divListeFilm.innerHTML += `
