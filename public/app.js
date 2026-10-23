@@ -1,19 +1,24 @@
 function renderStars(rating) {
   let stars = "";
+  if(rating !== null){
   for (let i = 1; i <= 5; i++) {
     stars += i <= rating ? "★" : "☆";
   }
+}
+else stars = "Aucune note"
   return stars;
 }
 
 fetch("http://localhost:3000/api/genres")
   .then((res) => res.json())
   .then((genres) => {
-    const select = document.querySelector("#genre-filter");
+    const selects = document.querySelectorAll("#genre-filter, #genre");
+    selects.forEach((select)=> {
     genres.forEach((genre) => {
       select.innerHTML += `<option value="${genre}">${genre}</option>`;
     });
   });
+});
 
 const select = document.querySelector("#genre-filter");
 
@@ -29,11 +34,16 @@ function afficherFilms(genre) {
       divListeFilm.innerHTML = "";
       data.forEach((film) => {
         divListeFilm.innerHTML += `
-        <div>
+        <div class="movie-card">
+        <div class="card-top">
+        <span class="genre-tag">${film.genre}</span>
+        </div>
         <h3>${film.title}</h3>
-        <p>genre: <strong>${film.genre}</strong></p>
-        <p>sortie en <strong>${film.year}</strong></p>
-        <p>note: ${renderStars(film.rating)}</p>
+        <p class="movie-year">sortie en ${film.year}</p>
+        <div class="rating">
+        <span class="rating-stars">${renderStars(film.rating)}</span>
+        ${film.rating !== null ? `<span class="rating-value">${film.rating}/5</span>` : ""}
+        </div>
     </div>`;
       });
     });
