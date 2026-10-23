@@ -54,3 +54,31 @@ afficherFilms("");
 select.addEventListener("change", (e) => {
     afficherFilms(e.target.value);
 })
+
+const form = document.querySelector("#movie-form");
+form.addEventListener("submit", (e) => {
+    e.preventDefault()
+
+    const title = document.querySelector("#title").value;
+    const genre = document.querySelector("#genre").value;
+    const year = Number(document.querySelector("#year").value);
+
+    fetch("http://localhost:3000/api/movies", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({title, genre, year}),
+    })
+    .then((res) => {
+        return res.json().then((data) => ({ok: res.ok, data}));
+    })
+    .then(({ok, data})=> {
+        const message = document.querySelector("#form-message");
+        if(ok){
+            message.textContent = "Film ajouté avec succès ! ";
+            form.reset();
+            afficherFilms(select.value);
+        }else {
+            message.textContent = data.error
+        }
+    })
+});
