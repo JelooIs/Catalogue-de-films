@@ -1,6 +1,8 @@
 const Database = require('better-sqlite3');
-const path = require('path');
-const db = new Database(path.join(__dirname, 'movies.db'));
+const db = new Database('movies.db');
+
+
+db.pragma('foreign_keys = ON');
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS movies (
@@ -8,9 +10,16 @@ db.exec(`
     title TEXT NOT NULL,
     genre TEXT NOT NULL,
     year INTEGER NOT NULL,
-    rating INTEGER DEFAULT NULL CHECK (rating IS NULL OR (rating BETWEEN 1 AND 5)),
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-     )
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS ratings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    movie_id INTEGER NOT NULL,
+    value INTEGER NOT NULL CHECK(value BETWEEN 1 AND 5),
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
+    );
 `);
 
 module.exports = db;

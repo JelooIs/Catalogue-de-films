@@ -45,6 +45,19 @@ function validateRating(rating) {
     return null;
 }
 
+const SELECT_MOVIES = `
+    SELECT movies.id, movies.title, movies.genre, movies.year, movies.created_at,
+           ROUND(AVG(ratings.value), 1) AS rating,
+           COUNT(ratings.id) AS ratings_count
+    FROM movies
+    LEFT JOIN ratings ON ratings.movie_id = movies.id
+`;
+
+
+function getMovie(id) {
+    return db.prepare(`${SELECT_MOVIES} WHERE movies.id = ? GROUP BY movies.id`).get(id);
+}
+
 // la route 
 app.get('/api/genres', (req, res) => {
     res.status(200).json(GENRES);
@@ -57,11 +70,13 @@ app.get('/api/movies', (req, res) => {
      if (genre !== undefined ) {
         const err = validateGenre(genre);
         if (err) return res.status(400).json({ error: err });
-        const movies = db.prepare('SELECT * FROM movies WHERE genre = ? ORDER BY title COLLATE NOCASE').all(genre);
+       
+        const movies = db.prepare(`${SELECT_MOVIES} WHERE movies.genre = ? GROUP BY movies.id ORDER BY movies.title COLLATE NOCASE`).all(genre);
         return res.status(200).json(movies);
      }
 
-     const movies = db.prepare('SELECT * FROM movies ORDER BY title COLLATE NOCASE').all();
+    
+     const movies = db.prepare(`${SELECT_MOVIES} GROUP BY movies.id ORDER BY movies.title COLLATE NOCASE`).all();
      res.status(200).json(movies);
 });
 
@@ -71,31 +86,34 @@ app.post('/api/movies', (req, res) => {
 
     const err = validateTitle(title) || validateGenre(genre) || validateYear(year);
     if (err) return res.status(400).json({ error: err });
-    
+
     const result = db.prepare('INSERT INTO movies (title, genre, year) VALUES (?, ?, ?)').run(title.trim(), genre, year);
 
-    const movie = db.prepare('SELECT * FROM movies WHERE id = ?').get(result.lastInsertRowid);
+  
+    const movie = getMovie(result.lastInsertRowid);
     res.status(201).json(movie);
 });
 
 //
 app.patch('/api/movies/:id', (req, res) => {
     const id = Number(req.params.id);
-    const movie = Number.isInteger(id) 
-    ? db.prepare('SELECT * FROM movies WHERE id = ?').get(id) 
-    : undefined;
+   
+    const movie = Number.isInteger(id) ? getMovie(id) : undefined;
     if (!movie) return res.status(404).json({ error: 'Film introuvable.' });
 
     const { rating } = req.body || {};
     const err = validateRating(rating);
     if (err) return res.status(400).json({ error: err });
 
-    db.prepare('UPDATE movies SET rating = ? WHERE id = ?').run(rating, id);
-    const update = db.prepare('SELECT * FROM movies WHERE id = ?').get(id);
+  
+    db.prepare('INSERT INTO ratings (movie_id, value) VALUES (?, ?)').run(id, rating);
+
+ 
+    const update = getMovie(id);
     res.status(200).json(update);
 });
 
-//
+
 app.delete('/api/movies/:id', (req, res) => {
     const id = Number(req.params.id);
     const result = Number.isInteger(id) ? db.prepare('DELETE FROM movies WHERE id = ?').run(id) : { changes: 0 };
@@ -117,4 +135,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur le port ${PORT}`);
 });
-
