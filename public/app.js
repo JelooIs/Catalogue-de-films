@@ -9,11 +9,13 @@ function renderStars(rating) {
 fetch("http://localhost:3000/api/genres")
   .then((res) => res.json())
   .then((genres) => {
-    const select = document.querySelector("#genre-filter");
+    const selects = document.querySelectorAll("#genre-filter, #genre");
+    selects.forEach((select)=> {
     genres.forEach((genre) => {
       select.innerHTML += `<option value="${genre}">${genre}</option>`;
     });
   });
+});
 
 const select = document.querySelector("#genre-filter");
 
